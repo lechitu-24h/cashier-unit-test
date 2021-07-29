@@ -42,19 +42,29 @@ export class Store {
   }
 
   cancel(name, amount = 1) {
-    this.cart.forEach((item) => {
+    this.cart.forEach((item, index, object) => {
       if (name === item.key) {
         item.amount = item.amount - amount;
+        if (item.amount === 0) {
+          object.splice(index, 1);
+        }
       }
     });
   }
 
   discount(name, type) {
-    this.cart.forEach((item) => {
+    this.cart.forEach((item, index) => {
       if (name === item.key) {
         if (type === "buy-one-get-one-free")
-          item.discount = item.unit * Math.floor(item.amount / 2);
-        if (type === "50%") item.discount = item.unit * item.amount * 0.5;
+          this.cart[index] = {
+            ...this.cart[index],
+            discount: item.unit * Math.floor(item.amount / 2),
+          };
+        if (type === "50%")
+          this.cart[index] = {
+            ...this.cart[index],
+            discount: item.unit * item.amount * 0.5,
+          };
       }
     });
   }
